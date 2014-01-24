@@ -25,10 +25,14 @@
 package org.my;
 
 import org.jboss.byteman.contrib.bmunit.BMNGRunner;
-import org.jboss.byteman.contrib.bmunit.BMRule;
-import org.jboss.byteman.contrib.bmunit.BMRules;
 import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.jboss.byteman.contrib.bmunit.BMScripts;
+import org.my.pipeline.core.PipelineProcessor;
+import org.my.pipeline.impl.Binder;
+import org.my.pipeline.impl.BindingReplacer;
+import org.my.pipeline.impl.CharSequenceReader;
+import org.my.pipeline.impl.CharSequenceWriter;
+import org.my.pipeline.util.BindingMap;
 import org.testng.annotations.Test;
 
 /**

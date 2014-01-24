@@ -30,6 +30,9 @@ import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.jboss.byteman.contrib.bmunit.BMUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.my.pipeline.impl.CharSequenceReader;
+import org.my.pipeline.impl.CharSequenceWriter;
+import org.my.pipeline.impl.PatternReplacer;
 
 /**
  * Test class showing how to use Byteman BMUnit package with JUnit to do tracing and fault injection
