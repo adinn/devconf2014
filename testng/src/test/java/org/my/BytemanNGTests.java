@@ -30,8 +30,8 @@ import org.jboss.byteman.contrib.bmunit.BMScripts;
 import org.my.pipeline.core.PipelineProcessor;
 import org.my.pipeline.impl.Binder;
 import org.my.pipeline.impl.BindingReplacer;
-import org.my.pipeline.impl.CharSequenceReader;
-import org.my.pipeline.impl.CharSequenceWriter;
+import org.my.pipeline.impl.CharSequenceSource;
+import org.my.pipeline.impl.CharSequenceSink;
 import org.my.pipeline.util.BindingMap;
 import org.testng.annotations.Test;
 
@@ -123,10 +123,10 @@ public class BytemanNGTests extends BMNGRunner
         buffer.append("a ${X1} broke a ${X4} with a ${X2}\n");
         // the third line reuses bindings [X1 ->"boy", X2 -> "stick"] and adds binding [X4 -> "window"]
         buffer.append("the boy threw the stick at the window\n");
-        CharSequenceReader reader = new CharSequenceReader(buffer);
+        CharSequenceSource reader = new CharSequenceSource(buffer);
         Binder binder = new Binder("the ([A-Za-z]+)", "X", bindings, reader);
         BindingReplacer replacer = new BindingReplacer(bindings, binder);
-        CharSequenceWriter writer = new CharSequenceWriter(replacer);
+        CharSequenceSink writer = new CharSequenceSink(replacer);
         reader.start();
         binder.start();
         replacer.start();
@@ -174,10 +174,10 @@ public class BytemanNGTests extends BMNGRunner
         buffer.append("a ${X1} broke a ${X4} with a ${X2}\n");
         // this third line reuses bindings [X1 ->"boy", X2 -> "stick"] and add binding [X4 -> "window"]
         buffer.append("the boy threw the stick at the window\n");
-        CharSequenceReader reader = new CharSequenceReader(buffer);
+        CharSequenceSource reader = new CharSequenceSource(buffer);
         Binder binder = new Binder("the ([A-Za-z]+)", "X", bindings, reader);
         BindingReplacer replacer = new BindingReplacer(bindings, binder);
-        CharSequenceWriter writer = new CharSequenceWriter(replacer);
+        CharSequenceSink writer = new CharSequenceSink(replacer);
         reader.start();
         binder.start();
         replacer.start();

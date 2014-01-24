@@ -28,8 +28,8 @@ import org.my.pipeline.core.PipelineProcessor;
 import org.my.pipeline.core.SinkProcessor;
 import org.my.pipeline.core.SourceProcessor;
 import org.my.pipeline.core.TeeProcessor;
-import org.my.pipeline.impl.FileReader;
-import org.my.pipeline.impl.FileWriter;
+import org.my.pipeline.impl.FileSource;
+import org.my.pipeline.impl.FileSink;
 import org.my.pipeline.impl.PatternReplacer;
 
 import java.io.IOException;
@@ -44,7 +44,7 @@ public class PipelineAppMain1
     {
         try {
             // pipeline source reads file foo.txt
-            SourceProcessor reader = new FileReader("foo.txt");
+            SourceProcessor reader = new FileSource("foo.txt");
             PipelineProcessor[] pipeline = new PipelineProcessor[5];
 
             // pipeline stage 0 replaces login name
@@ -59,11 +59,11 @@ public class PipelineAppMain1
             pipeline[4] = new PatternReplacer("(.*)[Dd]inn(.*)", "\\1Smith\\2", pipeline[3]);
 
             // the tees feed file wwriters sowe can sanity check the intermediate results
-            SinkProcessor writer = new FileWriter("bar1.txt", pipeline[1]);
-            SinkProcessor writer2 = new FileWriter("bar2.txt", pipeline[3]);
+            SinkProcessor writer = new FileSink("bar1.txt", pipeline[1]);
+            SinkProcessor writer2 = new FileSink("bar2.txt", pipeline[3]);
 
             // pipeline stage 4 writes the final output to filebar.txt
-            SinkProcessor writer3 = new FileWriter("bar.txt", pipeline[4]);
+            SinkProcessor writer3 = new FileSink("bar.txt", pipeline[4]);
             // start all the stream processors
             reader.start();
             for(int i = 0; i <pipeline.length ;i++) {

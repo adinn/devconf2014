@@ -29,8 +29,11 @@ import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Class used to store bindings created by class Binder. n.b. bindings are maintained 1:1 i.e. the
- * same value cannot be bound to two different identifiers.
+ * A BindingMap is used to store bindings established by instances of class Binder
+ * or BindingInserter. It is also used by instances of class BindingReplacer to
+ * lookup bound values which are to be substituted in place of binding identifiers.
+ * n.b. bindings are maintained 1:1 i.e. the same identifier cannot be bound to two
+ * different values.
  */
 public class BindingMap
 {

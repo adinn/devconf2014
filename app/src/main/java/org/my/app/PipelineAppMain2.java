@@ -27,8 +27,8 @@ package org.my.app;
 import org.my.pipeline.core.PipelineProcessor;
 import org.my.pipeline.core.TeeProcessor;
 import org.my.pipeline.impl.BindingInserter;
-import org.my.pipeline.impl.CharSequenceReader;
-import org.my.pipeline.impl.CharSequenceWriter;
+import org.my.pipeline.impl.CharSequenceSource;
+import org.my.pipeline.impl.CharSequenceSink;
 import org.my.pipeline.util.BindingMap;
 
 import java.io.IOException;
@@ -52,7 +52,7 @@ public class PipelineAppMain2
             input.append("a boy threw a stick at a window\n");
 
             // pipeline source is the input char sequence
-            CharSequenceReader reader = new CharSequenceReader(input);
+            CharSequenceSource reader = new CharSequenceSource(input);
             PipelineProcessor[] pipeline = new PipelineProcessor[5];
 
             // pipeline stage 0 matches "the X"
@@ -67,11 +67,11 @@ public class PipelineAppMain2
             pipeline[4] = new BindingInserter("a [A-Za-z0-9]+", "Z", bindings, pipeline[3]);
 
             // the tees feed a char sequence writer so we can sanity check the intermediate results
-            CharSequenceWriter writer = new CharSequenceWriter(pipeline[1]);
-            CharSequenceWriter writer2 = new CharSequenceWriter(pipeline[3]);
+            CharSequenceSink writer = new CharSequenceSink(pipeline[1]);
+            CharSequenceSink writer2 = new CharSequenceSink(pipeline[3]);
 
             // the output is also a char sequence writer
-            CharSequenceWriter writer3 = new CharSequenceWriter(pipeline[4]);
+            CharSequenceSink writer3 = new CharSequenceSink(pipeline[4]);
 
             // start all the stream processors
             reader.start();

@@ -34,8 +34,8 @@ import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 /**
- * A PatternReplacer is a LineProcessor which transforms each line of text using a regular expression pattern
- * to match segments of the text, substituting them with a replacement string.<p/>
+ * A PatternReplacer is a text line processor which transforms each line of text using a regular
+ * expression pattern to match segments of the text, substituting them with a replacement string.<p/>
  *
  * The pattern is a regular expression employing the syntax expected by {@link java.util.regex.Pattern}.
  * This means it can employ bracketed groups to identify elemnts of the input line. So, for example
@@ -48,7 +48,7 @@ import java.util.regex.Matcher;
  * conjunction with the example pattern provide above to transform the input line into the text
  * "author: Michael Dinn, JBoss".<p/>
  *
- * Note that the replacement String literal requires the backslash character preceding to the matching
+ * Note that the replacement String literal requires the backslash character which precedes the matching
  * group index to be escaped with another backslash. A single backslash followed by a digit sequence
  * would be interpreted as a unicode character.<p/>
  */
@@ -62,8 +62,8 @@ public class PatternReplacer extends TextLineProcessor {
     /**
      * create a pattern replacer
      * @param pattern a pattern which matches text to be transformed
-     * @param replacement a replacement to use in place ofany matching text lines which may include match group
-     * elementsformthe original line
+     * @param replacement a replacement to use in place ofa ny matching text lines which may include match group
+     * elements from the original line
      * @param source the source stream which provides the input text
      * @throws IOException
      */
@@ -78,7 +78,7 @@ public class PatternReplacer extends TextLineProcessor {
     /**
      * transforms any input text line which matches the pattern
      * @param text the input text line
-     * @return a transfortmed version of the line if it atches the pattern opterwise the original text line
+     * @return a transfortmed version of the line if it matches the pattern otherwise the original text line
      */
     public String transform(String text)
     {
@@ -119,7 +119,7 @@ public class PatternReplacer extends TextLineProcessor {
     }
 
     /**
-     * parses the replacement to identifyhow many match groups need to be substituted and store
+     * parses the replacement to identify how many match groups need to be substituted and store
      * their indices for later use
      */
     private void  computePatternGroups()

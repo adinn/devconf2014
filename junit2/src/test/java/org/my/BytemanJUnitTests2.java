@@ -30,8 +30,8 @@ import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.jboss.byteman.contrib.bmunit.BMUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.my.pipeline.impl.CharSequenceReader;
-import org.my.pipeline.impl.CharSequenceWriter;
+import org.my.pipeline.impl.CharSequenceSource;
+import org.my.pipeline.impl.CharSequenceSink;
 import org.my.pipeline.impl.PatternReplacer;
 
 /**
@@ -58,9 +58,9 @@ public class BytemanJUnitTests2
         System.out.println("testErrorInPipeline:");
         StringBuffer buffer = new StringBuffer("hello world!");
         buffer.append(" goodbye cruel world, goodbye!\n");
-        CharSequenceReader reader = new CharSequenceReader(buffer);
+        CharSequenceSource reader = new CharSequenceSource(buffer);
         PatternReplacer replacer = new PatternReplacer("world", "mum",reader);
-        CharSequenceWriter writer = new CharSequenceWriter(replacer);
+        CharSequenceSink writer = new CharSequenceSink(replacer);
         reader.start();
         replacer.start();
         writer.start();
@@ -119,9 +119,9 @@ public class BytemanJUnitTests2
         for (int i = 0; i < 40; i++) {
             buffer.append("goodbye! goodbye! goodbye!\n");
         }
-        CharSequenceReader reader = new CharSequenceReader(buffer);
+        CharSequenceSource reader = new CharSequenceSource(buffer);
         PatternReplacer replacer = new PatternReplacer("world", "mum",reader);
-        CharSequenceWriter writer = new CharSequenceWriter(replacer);
+        CharSequenceSink writer = new CharSequenceSink(replacer);
         reader.start();
         replacer.start();
         writer.start();

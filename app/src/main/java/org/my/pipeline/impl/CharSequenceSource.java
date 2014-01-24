@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2011, 2014 Red Hat and individual contributors as identified
+ * Copyright 2011 Red Hat and individual contributors as identified
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -29,14 +29,14 @@ import org.my.pipeline.core.SourceProcessor;
 import java.io.IOException;
 
 /**
- * CharSequenceReader is a data Source which populates its output stream with bytes read from a CharSequence
+ * CharSequenceSource is a data Source which populates its output stream with bytes read from a CharSequence
  */
 
-public class CharSequenceReader extends SourceProcessor
+public class CharSequenceSource extends SourceProcessor
 {
     CharSequence charseq;
 
-    public CharSequenceReader(CharSequence charseq) throws IOException
+    public CharSequenceSource(CharSequence charseq) throws IOException
     {
         super();
         this.charseq = charseq;

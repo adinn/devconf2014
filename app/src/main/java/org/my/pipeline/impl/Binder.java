@@ -36,16 +36,16 @@ import java.util.regex.Pattern;
  * A Binder is a text line processor which searches for occurences of a specific pattern in
  * each input line and associates the matching text with a binding name, a unique identifier.
  * The binding is recorded in a binding map provided when the binder is created. If the same
- * text is matched more than oncethen the existign bindingis reused. Binding names
+ * text is matched more than once then the existing binding is reused. Binding names
  * are created by appending a number to a prefix supplied when the binder is created<p/>
  *
  * The pattern is a regular expression which should contain at most one match group. If it
  * contains no match groups then the whole of the matching text is used as the value to be bound.
- * If it contains one match group then the text for this groupis used as the value to be bound.<p/>
+ * If it contains one match group then the text for this group is used as the value to be bound.<p/>
  *
  * So, for example, given pattern "the [A-Za-z]+", prefix "DET" and input text "the boy threw the
- * stick at the boy" the bindings would be ["DET1" -> "the boy", "DET2" -> "the stick"]. By contrast,
- * with pattern "the \([A-Za-z]+\)" and prefix N the bindings would be ["N1" -> "boy", "N2" -> "stick"].
+ * stick at the boy" the bindings would be [ "DET1" -> "the boy", "DET2" -> "the stick" ]. By contrast,
+ * with pattern "the \([A-Za-z]+\)" and prefix N the bindings would be [ "N1" -> "boy", "N2" -> "stick" ].
  */
 
 public class Binder extends TextLineProcessor

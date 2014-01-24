@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2011, 2014 Red Hat and individual contributors as identified
+ * Copyright 2011 Red Hat and individual contributors as identified
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -30,13 +30,13 @@ import org.my.pipeline.core.Source;
 import java.io.IOException;
 
 /**
- * CharSequenceWriter is a data Sink which collects the characters from its input stream
+ * CharSequenceSink is a data Sink which collects the characters from its input stream
  * making them available as a CharSequence.
  */
-public class CharSequenceWriter extends SinkProcessor {
+public class CharSequenceSink extends SinkProcessor {
     private StringBuffer buffer;
 
-    public CharSequenceWriter(Source source) throws IOException
+    public CharSequenceSink(Source source) throws IOException
     {
         super(source);
         this.buffer = new StringBuffer();

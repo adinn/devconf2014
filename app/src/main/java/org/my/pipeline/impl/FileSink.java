@@ -24,46 +24,42 @@
 
 package org.my.pipeline.impl;
 
-import org.my.pipeline.core.SourceProcessor;
+import org.my.pipeline.core.SinkProcessor;
+import org.my.pipeline.core.Source;
 
-import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
- * FileReader is a data Source which populates its output stream with bytes read from a file
+ * FileSink is a data Sink which collects the characters from its input stream into a file
  */
+public class FileSink extends SinkProcessor {
+    private FileOutputStream fout;
 
-public class FileReader extends SourceProcessor {
-    FileInputStream fin;
-
-    public FileReader(String file) throws IOException
+    public FileSink(String file, Source source) throws IOException
     {
-        super();
-        fin = new FileInputStream(file);
+        super(source);
+        this.fout = new FileOutputStream(file);
     }
 
     public void run()
     {
-        if (fin ==null || output==null) {
+        if (input==null || fout == null) {
             //nothing to do
             return;
         }
+
         try {
-            int next = fin.read();
-            while  (next >=0) {
-                output.write(next);
-                next = fin.read();
+            int next = input.read();
+            while  (next >= 0) {
+                fout.write(next);
+                next = input.read();
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
         } finally {
             try {
-                output.close();
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-            try {
-                fin.close();
+                fout.close();
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }

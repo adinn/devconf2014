@@ -27,8 +27,8 @@ package org.my.app;
 import org.my.pipeline.core.PipelineProcessor;
 import org.my.pipeline.core.SinkProcessor;
 import org.my.pipeline.core.SourceProcessor;
-import org.my.pipeline.impl.FileReader;
-import org.my.pipeline.impl.FileWriter;
+import org.my.pipeline.impl.FileSource;
+import org.my.pipeline.impl.FileSink;
 import org.my.pipeline.impl.PatternReplacer;
 import org.my.pipeline.impl.TraceProcessor;
 
@@ -45,7 +45,7 @@ public class PipelineAppMain
     {
         try {
             // pipeline source reads file foo.txt
-            SourceProcessor reader = new FileReader("foo.txt");
+            SourceProcessor reader = new FileSource("foo.txt");
             TraceProcessor tracein = new TraceProcessor("in: ", reader);
             PipelineProcessor[] pipeline = new PipelineProcessor[5];
 
@@ -63,7 +63,7 @@ public class PipelineAppMain
             // pipeline stage 4 feeds a final TraceProcessor displaying the output
             TraceProcessor traceout = new TraceProcessor("out: ", pipeline[4]);
             // the last TraceProcessor writes the final output to filebar.txt
-            SinkProcessor writer = new FileWriter("bar.txt", traceout);
+            SinkProcessor writer = new FileSink("bar.txt", traceout);
             // start all the stream processors
             reader.start();
             tracein.start();

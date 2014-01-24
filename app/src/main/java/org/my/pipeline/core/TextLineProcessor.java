@@ -29,7 +29,8 @@ import java.io.Reader;
 
 /**
  * A TextLineProcessor is a PipelineProcessor which transforms its input line by line, using
- * either LF or CR/LF as a line separator.
+ * either LF or CR/LF as a line separator. It implements the abstract method processPipeline
+ * declared by its parent class PipelineProcessor.
  *
  * Subclasses of TextLineProcessor must provide an implementation of method transform which accepts a line
  * of text as a String and returns a transformed version of the line as a String

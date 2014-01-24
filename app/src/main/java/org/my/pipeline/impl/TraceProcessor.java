@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat and individual contributors
+ * Copyright 2014, Red Hat and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -30,10 +30,11 @@ import org.my.pipeline.core.TextLineProcessor;
 import java.io.IOException;
 
 /**
- * A TraceProcessor is a TextProcessor which can be used to trace flow fo data
- * through a pipeline. It dumps its input a line at a time, labelling each
- * output line with a supplied prefix.
+ * A TraceProcessor is a text line processor used to trace flow of data
+ * through a pipeline. It dumps its input to System.out a line at a time,
+ * labelling each output line with a prefix supplied at create time.
  */
+
 public class TraceProcessor extends TextLineProcessor {
     private String prefix;
 

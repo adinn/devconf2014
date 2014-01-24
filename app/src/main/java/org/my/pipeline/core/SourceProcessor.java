@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat and individual contributors
+ * Copyright 2014, Red Hat and individual contributors
  * by the @authors tag. See the copyright.txt in the distribution for a
  * full listing of individual contributors.
  *
@@ -30,8 +30,8 @@ import java.io.PipedWriter;
 
 /**
  * A SourceProcessor sits at the front of a processor pipeline feeding
- * a data stream obtained from a data source located in-memory
- * or on some persistent storage medium int the pipeine.
+ * its downstream sink with a data stream derived from data located
+ * in memory or on some persistent storage medium.
  */
 
 public class SourceProcessor extends Thread implements Source {

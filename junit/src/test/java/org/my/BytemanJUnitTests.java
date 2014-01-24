@@ -28,8 +28,8 @@ import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.jboss.byteman.contrib.bmunit.BMUnitRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.my.pipeline.impl.CharSequenceReader;
-import org.my.pipeline.impl.CharSequenceWriter;
+import org.my.pipeline.impl.CharSequenceSource;
+import org.my.pipeline.impl.CharSequenceSink;
 import org.my.pipeline.impl.PatternReplacer;
 
 /**
@@ -50,9 +50,9 @@ public class BytemanJUnitTests
     {
         System.out.println("testPipeLine:");
         String input = "hello world! goodbye cruel world, goodbye!\n";
-        CharSequenceReader reader = new CharSequenceReader(input);
+        CharSequenceSource reader = new CharSequenceSource(input);
         PatternReplacer replacer = new PatternReplacer("world", "mum",reader);
-        CharSequenceWriter writer = new CharSequenceWriter(replacer);
+        CharSequenceSink writer = new CharSequenceSink(replacer);
         reader.start();
         replacer.start();
         writer.start();

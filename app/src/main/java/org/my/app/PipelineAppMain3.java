@@ -28,8 +28,8 @@ import org.my.pipeline.core.PipelineProcessor;
 import org.my.pipeline.core.TeeProcessor;
 import org.my.pipeline.impl.Binder;
 import org.my.pipeline.impl.BindingReplacer;
-import org.my.pipeline.impl.CharSequenceReader;
-import org.my.pipeline.impl.CharSequenceWriter;
+import org.my.pipeline.impl.CharSequenceSource;
+import org.my.pipeline.impl.CharSequenceSink;
 import org.my.pipeline.util.BindingMap;
 
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class PipelineAppMain3
             input.append("the ${X1}'s ${Z1} chased the ${X2}\n");
 
             // pipeline source is the input char sequence
-            CharSequenceReader reader = new CharSequenceReader(input);
+            CharSequenceSource reader = new CharSequenceSource(input);
             PipelineProcessor[] pipeline = new PipelineProcessor[3];
 
             // pipeline stage 0 matches "the X"
@@ -66,10 +66,10 @@ public class PipelineAppMain3
             pipeline[2] = new BindingReplacer(bindings, pipeline[1]);
 
             // the tees feed a char sequence writer so we can sanity check the intermediate results
-            CharSequenceWriter writer = new CharSequenceWriter(pipeline[1]);
+            CharSequenceSink writer = new CharSequenceSink(pipeline[1]);
 
             // the output is also a char sequence writer
-            CharSequenceWriter writer2 = new CharSequenceWriter(pipeline[2]);
+            CharSequenceSink writer2 = new CharSequenceSink(pipeline[2]);
 
             // start all the stream processors
             reader.start();

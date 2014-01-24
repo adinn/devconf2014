@@ -22,18 +22,18 @@
 # @authors Andrew Dinn
 #
 
-# A rule which dumps the text passed to a CharSequenceReader when it is created
+# A rule which dumps the text passed to a CharSequenceSource when it is created
 RULE trace input characters
-CLASS CharSequenceReader
+CLASS CharSequenceSource
 METHOD <init>(CharSequence)
 AT EXIT
 IF TRUE
 DO traceln("#INPUT\n" + $1.toString() + "#END")
 ENDRULE
 
-# A rule which dumps the text stored in a CharSequenceWriter when it is retreived
+# A rule which dumps the text stored in a CharSequenceSink when it is retreived
 RULE trace output characters
-CLASS CharSequenceWriter
+CLASS CharSequenceSink
 METHOD toString()
 AT EXIT
 IF TRUE

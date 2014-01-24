@@ -32,7 +32,7 @@ import java.io.PipedWriter;
  * A TeeProcessor is a PipelineProcessor which copies its input stream of bytes into two output streams.
  * This class implements Sink allowing it to be connected to a Source which provides its input. It also
  * implements Source allowing a Sink to consume its output. It expects and will only accept connections
- * from exactly two sinks
+ * from exactly two sinks.
  */
 public class TeeProcessor extends PipelineProcessor {
     protected PipedWriter output2;
