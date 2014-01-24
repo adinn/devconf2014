@@ -38,10 +38,6 @@
         <artifactId>tutorial2</artifactId>
         <version>1.0.0</version>
     </parent>
-    <properties>
-        <tools.jar>${java.home}/../lib/tools.jar</tools.jar>
-        <byteman.version>1.6.0</byteman.version>
-    </properties>
     <build>
         <plugins>
             <plugin>
