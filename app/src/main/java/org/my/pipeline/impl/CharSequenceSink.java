@@ -33,7 +33,7 @@ import java.io.IOException;
  * CharSequenceSink is a data Sink which collects the characters from its input stream
  * making them available as a CharSequence.
  */
-public class CharSequenceSink extends SinkProcessor {
+public class CharSequenceSink extends SinkProcessor implements CharSequence {
     private StringBuffer buffer;
 
     public CharSequenceSink(Source source) throws IOException
@@ -42,21 +42,12 @@ public class CharSequenceSink extends SinkProcessor {
         this.buffer = new StringBuffer();
     }
 
-    public void run()
+    public void consume() throws IOException
     {
-        if (input==null) {
-            //nothing to do
-            return;
-        }
-
-        try {
-            int next = input.read();
-            while  (next >= 0) {
-                buffer.append((char) next);
-                next = input.read();
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
+        int next = input.read();
+        while  (next >= 0) {
+            buffer.append((char) next);
+            next = input.read();
         }
     }
 

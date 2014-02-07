@@ -36,11 +36,12 @@ import java.io.PipedWriter;
  * PipelineProcessor is an abstract class. Implementations define the transformation by
  * implementing method processPipeline.
  */
-public abstract class PipelineProcessor extends SinkProcessor implements Source {
+public abstract class PipelineProcessor extends Thread implements Source, Sink {
     /**
      * the stream fed by this processor
      */
     protected PipedWriter output;
+    protected PipedReader input;
 
     /**
      * construct a PipelineProcessor by setting up its input stream from the supplied Source
@@ -48,10 +49,18 @@ public abstract class PipelineProcessor extends SinkProcessor implements Source 
      * @throws IOException
      */
     public PipelineProcessor(Source source) throws IOException {
-        super(source);
-        output = null;
+    	input = null;
+    	output = null;
+    	source.feed(this);
     }
 
+    public void setInput(PipedReader input) throws IOException {
+        if (this.input != null) {
+            throw new IOException("input already connected");
+        }
+        this.input = input;
+    }
+    
     public void feed(Sink sink) throws IOException
     {
         if (output != null) {
@@ -60,6 +69,14 @@ public abstract class PipelineProcessor extends SinkProcessor implements Source 
         output = new PipedWriter();
         sink.setInput(new PipedReader(output));
     }
+
+    /**
+     * Method implemented by subclasses to read and process the input data
+     * produced by an upstream source and write output data to be consumed
+     * by a downstream sink.
+     * @throws IOException
+     */
+    public abstract void processPipeline() throws IOException;
 
     /**
      * Calls {@link #processPipeline()}.
@@ -98,10 +115,4 @@ public abstract class PipelineProcessor extends SinkProcessor implements Source 
             }
         }
     }
-
-    /**
-     * Called by the run method to process the input stream and write the output stream.
-     * @throws IOException
-     */
-    public abstract void processPipeline() throws IOException;
 }

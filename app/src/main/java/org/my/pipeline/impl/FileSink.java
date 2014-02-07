@@ -42,9 +42,9 @@ public class FileSink extends SinkProcessor {
         this.fout = new FileOutputStream(file);
     }
 
-    public void run()
+    public void consume() throws IOException
     {
-        if (input==null || fout == null) {
+        if (fout == null) {
             //nothing to do
             return;
         }
@@ -55,8 +55,6 @@ public class FileSink extends SinkProcessor {
                 fout.write(next);
                 next = input.read();
             }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
         } finally {
             try {
                 fout.close();

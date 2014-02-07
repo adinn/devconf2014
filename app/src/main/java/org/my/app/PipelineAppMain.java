@@ -35,51 +35,59 @@ import org.my.pipeline.impl.TraceProcessor;
 import java.io.IOException;
 
 /**
- * A simple application which streams an input file, performs several pattern matching replacements
- * on each line in turn and writes the transformed text to an output file. The data stream is
- * routed through TraceProcessors showing each successive stage of data transformation on System.out.
+ * A simple application which uses a FileSource and FileSink process
+ * to copy a file, reading and writing the contents in parallel.
+ *
+ * Each element of the pipeline is a Thread which runs independently
+ * of the other elements. Pipeline elements are linked in a dataflow
+ * by means of a PipedWriter written by the upstream SourceProecssor
+ * connected to a PipedReader read by the downstream SinkProcessor.
+ * 
+ * FileSource is a SourceProcessor which streams data from a disk
+ * file into the head of a pipeline.
+ * 
+ * FileSink is a SinkProcessor which sits at the end of a pipeline
+ * and collects upstream data into a disk file.
+ * 
+ * Between the FileSource and FileSink is a TraceProcessor. It is a
+ * PipelineProcessor which acts both as a Sink, receiving file data
+ * from upstream, and as a Source, feeding data downstream.
+ * 
+ * TraceProcessor actually subclasses TextLineProcessor which specialises
+ * PipelineProcessor, reading input text a line at a time, transforming it,
+ * and writing the modified text to the output stream, repeating until
+ * the input stream is exhausted.
+ * 
+ * Subclasses of TextLineProcessor simply implement abstract method
+ * transform which takes a line of text as (a String) input and returns
+ * a transformed (String) version of the line to be passed downstream
+ * as the output. The implementation in TraceLineProcessor always returns
+ * the original line unmodified. However, as a side effect it also prints
+ * the line to System.out, enabling you to see what data is passing through
+ * the pipeline.
  */
 public class PipelineAppMain
 {
     public static void main(String[] args)
     {
         try {
-            // pipeline source reads file foo.txt
-            SourceProcessor reader = new FileSource("foo.txt");
-            TraceProcessor tracein = new TraceProcessor("in: ", reader);
-            PipelineProcessor[] pipeline = new PipelineProcessor[5];
-
-            // pipeline stage 0 replaces login name
-            pipeline[0] = new PatternReplacer("adinn", "msmith", tracein);
-            // pipeline stage 1 tees intermediate output to a trace filewriter
-            pipeline[1] = new TraceProcessor("mid1: ", pipeline[0]);
-            // pipeline stage 2 replaces first name
-            pipeline[2] = new PatternReplacer("[Aa]ndrew", "Michael", pipeline[1]);
-            // pipeline stage 3 tees intermediate output to a trace filewriter
-            pipeline[3] = new TraceProcessor("mid2: ", pipeline[2]);
-            // pipeline stage 4 replaces surname
-            pipeline[4] = new PatternReplacer("(.*)[Dd]inn(.*)", "\\1Smith\\2", pipeline[3]);
-
-            // pipeline stage 4 feeds a final TraceProcessor displaying the output
-            TraceProcessor traceout = new TraceProcessor("out: ", pipeline[4]);
-            // the last TraceProcessor writes the final output to filebar.txt
-            SinkProcessor writer = new FileSink("bar.txt", traceout);
-            // start all the stream processors
-            reader.start();
-            tracein.start();
-            for(int i = 0; i <pipeline.length ;i++) {
-                pipeline[i].start();
-            }
-            traceout.start();
-            writer.start();
-            //now wait for all the processors to finish
-            reader.join();
-            tracein.join();
-            for(int i = 0; i <pipeline.length; i++) {
-                pipeline[i].join();
-            }
-            traceout.join();
-            writer.join();
+        	// create all the elements of the pipeline in order
+        	// from start to finish
+            // a file source streams file foo.txt into the pipeline
+            SourceProcessor fileSource = new FileSource("foo.txt");
+            // a trace processor traces the data streamed through
+            // the pipeline by the file source.
+            PipelineProcessor tracer = new TraceProcessor("*** ", fileSource);
+            //  a file sink streams the output to file bar.txt
+            SinkProcessor fileSink = new FileSink("bar.txt", tracer);
+            // start all the processors
+            fileSource.start();
+            tracer.start();
+            fileSink.start();
+            // wait for all the processors to finish
+            fileSource.join();
+            tracer.join();
+            fileSink.join();
         } catch (InterruptedException ie) {
             ie.printStackTrace();
         } catch (IOException ioe) {

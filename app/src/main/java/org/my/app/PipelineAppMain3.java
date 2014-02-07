@@ -39,8 +39,17 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A simple application which streams an input String, performs several binding replacements
- * on each line in turn and writes the transformed text to an output String
+ * Another example using the bind/replace capability. This one
+ * uses class Binder which is a slightly simplified version of
+ * BindingInserter. Binder adds unique bindings for matched
+ * text into the BindingMap but does not replace the matched
+ * text with a reference to the binding. So, for example the
+ * Binder at pipeline[0] processes the first input line
+ * "the boy threw the stick at the boy\n" by adding bindings
+ * [X1 --> boy, X2 --> stick] but it passes the text to the
+ * next processor in the pipeline unmodified. So, in this
+ * example only the BindingReplacer at pipeline[3] modifies
+ * the text in the data stream.
  */
 public class PipelineAppMain3
 {

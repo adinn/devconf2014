@@ -33,7 +33,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A Binder is a text line processor which searches for occurences of a specific pattern in
+ * A Binder is a text line processor which searches for occurrences of a specific pattern in
  * each input line and associates the matching text with a binding name, a unique identifier.
  * The binding is recorded in a binding map provided when the binder is created. If the same
  * text is matched more than once then the existing binding is reused. Binding names

@@ -34,39 +34,33 @@ import java.io.IOException;
  */
 
 public class FileSource extends SourceProcessor {
-    FileInputStream fin;
+	public FileInputStream fin;
 
-    public FileSource(String file) throws IOException
-    {
-        super();
-        fin = new FileInputStream(file);
-    }
+	public FileSource(String file) throws IOException
+	{
+		super();
+		fin = new FileInputStream(file);
+	}
 
-    public void run()
-    {
-        if (fin ==null || output==null) {
-            //nothing to do
-            return;
-        }
-        try {
-            int next = fin.read();
-            while  (next >=0) {
-                output.write(next);
-                next = fin.read();
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        } finally {
-            try {
-                output.close();
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-            try {
-                fin.close();
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-        }
-    }
+	@Override
+	public void produce() throws IOException
+	{
+		if (fin ==null) {
+			//nothing to do
+			return;
+		}
+		try {
+			int next = fin.read();
+			while (next >=0) {
+				output.write(next);
+				next = fin.read();
+			}
+		} finally {
+			try {
+				fin.close();
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+		}
+	}
 }

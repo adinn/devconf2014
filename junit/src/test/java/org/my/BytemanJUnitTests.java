@@ -33,7 +33,20 @@ import org.my.pipeline.impl.CharSequenceSink;
 import org.my.pipeline.impl.PatternReplacer;
 
 /**
- * Test class showing how to use Byteman BMUnit package with JUnit to do simple tracing
+ * Test class showing how to use Byteman BMUnit package with
+ * JUnit to do simple tracing
+ * 
+ * The RunWith annotation on the class tells JUnit to use the BMUnit
+ * code when runnign this test. BMUnit ensures that the Byteman agent
+ * is loaded into the test JVM and checks the test class and test
+ * methods for annotations specifying Byteman rules which should be
+ * used to moidfy the behaviour of test code, application code or JVM
+ * runtime code while the tests are running.
+ * 
+ * The BMScript annotation on the class BytemanJUnitTests selects a
+ * script containing Byteman rules which tarce execution of some of
+ * the pipeline classes, displaying data going into the pipeline,
+ * being transformed and being collected at the end of the pipeline.
  */
 @RunWith(BMUnitRunner.class)
 @BMScript(value="trace", dir="target/test-classes")
@@ -42,14 +55,14 @@ public class BytemanJUnitTests
     /**
      * a simple test of the pattern replacer functionality. we feed a String into the pipeline via a
      * CharSequenceReader, transform it via a PatternReplacer and then retrieve the transformed String
-     * using a CharSequenceWriter. This test does not use any Byteman rules.
+     * using a CharSequenceWriter. 
      * @throws Exception
      */
     @Test
     public void testPipeline() throws Exception
     {
         System.out.println("testPipeLine:");
-        String input = "hello world! goodbye cruel world, goodbye!\n";
+        String input = "hello world!\ngoodbye cruel world!\ngoodbye!\n";
         CharSequenceSource reader = new CharSequenceSource(input);
         PatternReplacer replacer = new PatternReplacer("world", "mum",reader);
         CharSequenceSink writer = new CharSequenceSink(replacer);
@@ -60,7 +73,7 @@ public class BytemanJUnitTests
         replacer.join();
         writer.join();
         String output = writer.toString();
-        assert(output.equals("hello mum! goodbye cruel mum, goodbye!\n"));
+        assert(output.equals("hello mum!\ngoodbye cruel mum!\ngoodbye!\n"));
     }
 
 }

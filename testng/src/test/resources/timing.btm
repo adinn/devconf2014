@@ -46,7 +46,7 @@ DO createRendezvous($0, 2, true);
 ENDRULE
 
 # A rule to increment the counter for the Binder or BindingReplacer each time a line of text is
-# about to be processed. Note the use of the ^ to propagate thsi rule into subclass implementations
+# about to be processed. Note the use of the ^ to propagate this rule into subclass implementations
 # of the abstract method defined by TextLineProcessor.
 RULE increment Binder or BindingReplacer line counter
 CLASS ^TextLineProcessor

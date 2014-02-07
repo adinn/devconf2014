@@ -31,11 +31,15 @@ import java.io.PipedReader;
  * A SinkProcessor sits at the end of a processor pipeline collecting the
  * transformed data stream either in memory or on persistent storage.
  */
-public class SinkProcessor extends Thread implements Sink {
+public abstract class SinkProcessor extends Thread implements Sink {
+	/**
+	 * the stream of data consumed by this sink
+	 */
     protected PipedReader input;
 
     protected SinkProcessor(Source source) throws IOException
     {
+    	input = null;
         source.feed(this);
     }
 
@@ -44,5 +48,33 @@ public class SinkProcessor extends Thread implements Sink {
             throw new IOException("input already connected");
         }
         this.input = input;
+    }
+    
+    /**
+     * method implemented by subclasses which consumes the data
+     * coming from an upstream source
+     * 
+     * @throws IOException
+     */
+    public abstract void consume() throws IOException;
+
+    public void run()
+    {
+        if (input==null) {
+            //nothing to do
+            return;
+        }
+
+        try {
+        	consume();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+    	} finally {
+    		try {
+    			input.close();
+    		} catch (IOException ioe) {
+    			ioe.printStackTrace();
+    		}
+    	}
     }
 }

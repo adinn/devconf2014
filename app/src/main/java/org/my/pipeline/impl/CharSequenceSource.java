@@ -42,29 +42,15 @@ public class CharSequenceSource extends SourceProcessor
         this.charseq = charseq;
     }
 
-    public void run()
-    {
-        if (charseq ==null || output==null) {
-            //nothing to do
-            return;
-        }
-        try {
-            if (charseq instanceof String) {
-                output.write((String) charseq);
-            } else {
-                int l = charseq.length();
-                for (int i = 0; i < l; i++) {
-                    output.write(charseq.charAt(i));
-                }
-            }
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        } finally {
-            try {
-                output.close();
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-        }
-    }
+	@Override
+	public void produce() throws IOException {
+		if (charseq instanceof String) {
+			output.write((String) charseq);
+		} else {
+			int l = charseq.length();
+			for (int i = 0; i < l; i++) {
+				output.write(charseq.charAt(i));
+			}
+		}
+	}
 }

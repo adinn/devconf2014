@@ -49,5 +49,23 @@ CLASS PatternReplacer
 METHOD transform(String)
 AT EXIT
 IF NOT $1.equals($!)
-DO traceln(" patternReplace(" + $1 + " -> " +$! +")")
+DO traceln(" patternReplace(" + $1 + " -> " + $! +")")
+ENDRULE
+
+# A rule which prints a trace message whenever a thread's run method is entered
+RULE trace Thread.run entry
+CLASS ^Thread
+METHOD run()
+AT ENTRY
+IF TRUE
+DO traceln("entered run for " + $this.getClass().getName());
+ENDRULE
+
+# A rule which prints a trace message whenever a thread's run method is exited
+RULE trace Thread.run exit
+CLASS ^Thread
+METHOD run()
+AT EXIT
+IF TRUE
+DO traceln("exited run for " + $this.getClass().getName());
 ENDRULE

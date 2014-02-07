@@ -59,13 +59,6 @@ public class TeeProcessor extends PipelineProcessor {
         }
     }
 
-    public void setInput(PipedReader input) throws IOException {
-        if (this.input != null) {
-            throw new IOException("input already connected");
-        }
-        this.input = input;
-    }
-
     /**
      * Copies the input stream to both output streams
      * @throws RuntimeException if a second output has not been configured
@@ -84,7 +77,7 @@ public class TeeProcessor extends PipelineProcessor {
                 next = input.read();
             }
         } finally {
-            output2.close();
+        	output2.close();
         }
     }
 }

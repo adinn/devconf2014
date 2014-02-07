@@ -38,9 +38,44 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A simple application which streams an input String, performs several binding replacements
- * on each line in turn and writes the transformed text to an output String
+ * This application employs BindingInserter, another subclass of
+ * TextLineProcessor, to locate terms in the input text, bind them
+ * to unique named variables in a BindingMap and then replace the
+ * term with a reference to the variable. So, for example, the
+ * first BindingInserter looks for patterns like "the boy", inserts
+ * a binding [X1 --> boy] into the binding map and then replaces the
+ * bound text with a reference to the variable, "the ${X1}".
+ * 
+ * If a term is already bound then the existing binding is re-used.
+ * Each time a new binding is needed the counter used to generate a
+ * unique variable name is incremented. So, the first input line
+ * "the boy threw the stick at the boy\n" is transformed by the first
+ * BindingInserter to "the ${X1} threw the ${X2} at the ${X1}\n" and
+ * the binding map is updated to contain [X1 --> boy, X2 --> stick].
+ * 
+ * The pipeline is fed by a CharSequenceSource and its final stage
+ * is a CharSequenceSink. The former produces its input from a
+ * String or some other CharSequence, passed as input when it is
+ * created. The second collects its input into a StringBuffer which
+ * can be queried after the pipeline has finished execution to find
+ * the text length and the characters it contains (CharSequenceSink
+ * implements interface CharSequence).
+ * 
+ * Note that BindingMap object used by the 3 BindingInserter instances
+ * breaks the assumption that the 3 processes are independent. It is
+ * a shared state which could potentially communicate information between
+ * the processes out of order (unlike the pipeline itself which
+ * communicates changes to the data stream in order). Given certain
+ * data in original data source this may make the outcome of the program
+ * depend in the scheduling order of the BindingInserter processes.
+ * 
+ * For example, if the first and second input lines are reversed then
+ * there is a race condition between the first and second BindingInserter
+ * to insert a binding for "boy" (convince yourself this is possible even
+ * though you are unlikely to ever see it except, maybe , on a very
+ * heavily loaded machine).
  */
+
 public class PipelineAppMain2
 {
     public static void main(String[] args)
@@ -55,22 +90,26 @@ public class PipelineAppMain2
             CharSequenceSource reader = new CharSequenceSource(input);
             PipelineProcessor[] pipeline = new PipelineProcessor[5];
 
-            // pipeline stage 0 matches "the X"
+            // pipeline stage 0 matches "the Aann" replacing it with
+            // "the ${Xn}" and binding Xn --> Aann
             pipeline[0] = new BindingInserter("the ([A-Za-z0-9]+)", "X", bindings, reader);
-            // pipeline stage 1 tees intermediate output to a trace char sequence writer
+            // pipeline stage 1 tees intermediate output to char sequence sink writer
             pipeline[1] = new TeeProcessor(pipeline[0]);
-            // pipeline stage 2 matches "a Y"
+            // pipeline stage 2 matches "a Aann" replacing it with
+            // "a ${Yn}" and binding Yn --> Aann
             pipeline[2] = new BindingInserter("a ([A-Za-z0-9]+)", "Y", bindings, pipeline[1]);
-            // pipeline stage 3 tees intermediate output to a trace char sequence writer
+            // pipeline stage 3 tees intermediate output to char sequence sink writer2
             pipeline[3] = new TeeProcessor(pipeline[2]);
-            // pipeline stage 4 matches "a Y"
-            pipeline[4] = new BindingInserter("a [A-Za-z0-9]+", "Z", bindings, pipeline[3]);
+            // pipeline stage 4 matches "a ${Xn}" replacing it with
+            // "${Zn}" and binding Zn --> a ${Xn}
 
-            // the tees feed a char sequence writer so we can sanity check the intermediate results
+            pipeline[4] = new BindingInserter("a \\$\\{[X0-9]+\\}", "Z", bindings, pipeline[3]);
+
+            // connect the tees to their char sequence sinks so we can sanity check the intermediate results
             CharSequenceSink writer = new CharSequenceSink(pipeline[1]);
             CharSequenceSink writer2 = new CharSequenceSink(pipeline[3]);
 
-            // the output is also a char sequence writer
+            // the final output is also a char sequence sink
             CharSequenceSink writer3 = new CharSequenceSink(pipeline[4]);
 
             // start all the stream processors
@@ -90,6 +129,7 @@ public class PipelineAppMain2
             writer2.join();
             writer3.join();
 
+            // here is what happened at each stage
             System.out.println("input:");
             System.out.println(input);
             System.out.println("1st intermediate:");

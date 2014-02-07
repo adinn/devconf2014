@@ -51,3 +51,13 @@ AT EXIT
 IF NOT $1.equals($!)
 DO traceln(" patternReplace(" + $1 + " -> " +$! +")")
 ENDRULE
+
+RULE show source of IOException
+CLASS IOException
+METHOD <init>
+AT EXIT
+IF callerMatches("org\.my\..+", true, true, 5)
+DO setTriggering(false);
+   traceStack("*** IO exception created here ***\n", 5);
+   traceln("***")
+ENDRULE

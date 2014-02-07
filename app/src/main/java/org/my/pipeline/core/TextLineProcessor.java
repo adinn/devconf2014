@@ -51,7 +51,7 @@ public abstract class TextLineProcessor extends PipelineProcessor {
      */
     public void processPipeline() throws IOException
     {
-        TextLine lineBuffer = new TextLine(input);
+        LineBuffer lineBuffer = new LineBuffer(input);
         String text = lineBuffer.readText();
         while (text != null) {
             text = transform(text);
@@ -68,23 +68,23 @@ public abstract class TextLineProcessor extends PipelineProcessor {
 
     /**
      * abstract method provided to allow subclasses to define how each text line istobe transformed
-     * @param line a line of text from th efile omitting any line terminator
+     * @param line a line of text from the file omitting any line terminator
      * @return
      */
     public abstract String transform(String line);
 
     /**
-     * private class used to read sucessive text lines from an input stream up to CR/LF,LF or EOF.
+     * private class used to read successive text lines from an input stream up to CR/LF,LF or EOF.
      * The text is returned as a String and methods are provided to check the line termination.
      */
 
-    private static class TextLine
+    private static class LineBuffer
     {
         private Reader input;
         private boolean isCrLf;
         private boolean isLf;
 
-        public TextLine(Reader input) throws IOException
+        public LineBuffer(Reader input) throws IOException
         {
             this.input = input;
             this.isCrLf = false;

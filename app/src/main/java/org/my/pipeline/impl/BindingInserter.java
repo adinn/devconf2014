@@ -92,7 +92,9 @@ public class BindingInserter extends TextLineProcessor
             while (current < start) {
                 builder.append(chars[current++]);
             }
+            builder.append("${");
             builder.append(binding);
+            builder.append("}");
             current = end;
             isMatch = matcher.find(current);
         }

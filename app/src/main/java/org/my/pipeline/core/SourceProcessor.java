@@ -34,18 +34,48 @@ import java.io.PipedWriter;
  * in memory or on some persistent storage medium.
  */
 
-public class SourceProcessor extends Thread implements Source {
-    protected PipedWriter output;
+public abstract class SourceProcessor extends Thread implements Source {
+	/**
+	 * the stream of data produced by this source
+	 */
+	protected PipedWriter output;
 
-    protected SourceProcessor() {
-        output = null;
-    }
+	protected SourceProcessor() {
+		output = null;
+	}
 
-    public void feed(Sink sink) throws IOException {
-        if (output != null) {
-            throw new IOException("output already connected");
-        }
-        output = new PipedWriter();
-        sink.setInput(new PipedReader(output));
-    }
+	
+	public void feed(Sink sink) throws IOException {
+		if (output != null) {
+			throw new IOException("output already connected");
+		}
+		output = new PipedWriter();
+		sink.setInput(new PipedReader(output));
+	}
+
+    /**
+     * method implemented by subclasses which produces the data
+     * needed by a downstream source
+     * 
+     * @throws IOException
+     */
+	public abstract void produce() throws IOException;
+
+	public void run() {
+		if (output==null) {
+			//nothing to do
+			return;
+		}
+		try {
+			produce();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} finally {
+			try {
+				output.close();
+			} catch (IOException ioe) {
+				ioe.printStackTrace();
+			}
+		}
+	}
 }

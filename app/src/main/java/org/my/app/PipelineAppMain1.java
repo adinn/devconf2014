@@ -35,8 +35,59 @@ import org.my.pipeline.impl.PatternReplacer;
 import java.io.IOException;
 
 /**
- * A variant of PipelineAppMain which uses TeeProcessors to dump intermediate output to
- * files.
+ * A more complicated pipeline application which transforms input
+ * file foo.txt in 3 stages collecting the transformed text in
+ * output file bar.txt
+ * 
+ * The transformation processes use class PatternReplacer which is
+ * a subclass of TextLineProcessor. It's transform method looks for
+ * occurrences of a pattern in each input line and substitutes each
+ * match with some replacement text.
+ * 
+ * In the simplest case the pattern and replacement are just a plain
+ * String -- the first PatternReplacer, pipeline[0], provides an
+ * example of this, replacing every occurrence of the text "adinn" in
+ * an input line with the replacement text "msmith".
+ * 
+ *  The pattern String is actually treated as a standard Java regular
+ *  expression. The second PatternReplacer, pipeline[2], provides an
+ *  example of this. Pattern "[Aa]ndrew" will match any occurrence of
+ *  "Andrew" or "andrew" in an input line. In either case, the matched
+ *  text will be replaced with "Michael".
+ *  
+ *  Patterns can also include bracketed terms called match groups to
+ *  identify elements of the matched text which are to be included in
+ *  the replacement text. An example of this is provided by the third
+ *  PatternReplacer, pipeline[4], which uses two wildcard patterns to 
+ *  match text preceding and following the pattern "[Dd]inn". If an
+ *  input line contains the text "Dinn" or "dinn" then this pattern
+ *  will match the whole line. The text matched by the pattern groups
+ *  is referenced in the replacement String using a numerical index.
+ *  So, "\\2" refers to the second match group, the text which follows
+ *  the "Dinn" and "\\1" refers to the first match group. The replacement
+ *  text replaces Dinn with Smith and adds the preceding and following
+ *  text in reverse order.
+ *  
+ *  n.b. the replacement uses need two '\' characters to ensure that
+ *  the '\' actually appears as a character in the resulting String
+ *  "\2" would be parsed as the unicode character literal for Ctrl-B.
+ *  
+ *  The pipeline includes two extra TeeProcessor elements. TeeProcessor
+ *  is another class used to aid tracing/debug. TeeProcessor accepts a
+ *  connection to two downstream Sinks, effectively branching the
+ *  pipeline and all it does is copy bytes from its input stream to each
+ *  of the two outputs. It does not care about how the data is organised
+ *  in lines of text so it can subclass PipelineProcess directly,
+ *  implementing abstract method processPipeline.
+ *  
+ *  The extra TeeProcessor branch from pipeline[1] is fed into a
+ *  FileSink, writer, which saves its  input to file bar1.txt. Similarly,
+ *  extra TeeProcessor branch from pipeline[3] feeds writer2 which writes
+ *  file bar2.txt. So, when this program is run the 3 output files show
+ *  the data in the pipeline at each stage of the transformation process.
+ *  If you execute a diff between each successive pair of files, foo.txt
+ *  and bar1.txt, bar1.txt and bar2.txt, bar2.txt and bar.txt you will
+ *  see the changes intorduced by each of the PatternReplacer processes.  
  */
 public class PipelineAppMain1
 {
@@ -48,7 +99,7 @@ public class PipelineAppMain1
             PipelineProcessor[] pipeline = new PipelineProcessor[5];
 
             // pipeline stage 0 replaces login name
-            pipeline[0] = new PatternReplacer("adinn", "msmith",reader);
+            pipeline[0] = new PatternReplacer("adinn", "msmith", reader);
             // pipeline stage 1 tees intermediate output to a trace filewriter
             pipeline[1] = new TeeProcessor(pipeline[0]);
             // pipeline stage 2 replaces first name
@@ -56,9 +107,9 @@ public class PipelineAppMain1
             // pipeline stage 3 tees intermediate output to a trace filewriter
             pipeline[3] = new TeeProcessor(pipeline[2]);
             // pipeline stage 4 replaces surname
-            pipeline[4] = new PatternReplacer("(.*)[Dd]inn(.*)", "\\1Smith\\2", pipeline[3]);
+            pipeline[4] = new PatternReplacer("(.*)[Dd]inn(.*)", "\\2Smith\\1", pipeline[3]);
 
-            // the tees feed file wwriters sowe can sanity check the intermediate results
+            // the tees feed file wwriters so we can sanity check the intermediate results
             SinkProcessor writer = new FileSink("bar1.txt", pipeline[1]);
             SinkProcessor writer2 = new FileSink("bar2.txt", pipeline[3]);
 
